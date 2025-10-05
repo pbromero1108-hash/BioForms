@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BioForms Mars 2025 – Caleta Olivia</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Exo+2:wght@300;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    :root {
+      --rose: #ff00c1;
+      --cyan: #00fff7;
+      --violet: #8a2be2;
+      --dark: #000010;
+      --font-hud: 'Orbitron', sans-serif;
+      --font-body: 'Exo 2', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      font-family: var(--font-body);
+      background: var(--dark);
+      color: var(--cyan);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+    }
+    #splash {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 200;
+    }
+    #splash h1, #splash h2, #splash h3, #splash p {
+      font-family: var(--font-hud);
+      text-align: center;
+    }
+    #splash h1 {
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      color: var(--rose);
+      text-shadow: 0 0 12px var(--rose);
+    }
+    .typewriter {
+      overflow: hidden;
+      border-right: .1em solid var(--cyan);
+      white-space: nowrap;
+      margin: 0 auto;
+      letter-spacing: .05em;
+      animation: typing 2s steps(30, end), blink-caret .75s step-end infinite;
+    }
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+    @keyframes blink-caret {
+      from, to { border-color: transparent; }
+      50% { border-color: var(--cyan); }
+    }
+    .button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: clamp(10px, 2vw, 14px) clamp(16px, 3vw, 24px);
+      border-radius: 8px;
+      border: 1px solid var(--cyan);
+      background: rgba(0, 255, 247, 0.1);
+      font-family: var(--font-hud);
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .button:hover {
+      background: rgba(0, 255, 247, 0.3);
+      box-shadow: 0 0 15px var(--cyan);
+    }
+    main {
+      display: none;
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+      width: 100%;
+    }
+    .section {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    .section.visible {
+      display: block;
+      opacity: 1;
+    }
+    .card {
+      margin: 10px 0;
+      padding: 14px 18px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: linear-gradient(145deg, rgba(255, 0, 193, 0.15), rgba(0, 255, 247, 0.15));
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .card:hover {
+      border-color: var(--cyan);
+    }
+    #stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+    .star {
+      position: absolute;
+      background: var(--cyan);
+      border-radius: 50%;
+      animation: twinkle 3s infinite;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+    h2 {
+      font-family: var(--font-hud);
+      color: var(--rose);
+      text-shadow: 0 0 8px var(--rose);
+    }
+    .details {
+      background: rgba(10, 10, 30, 0.7);
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 10px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    #machineList {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Splash -->
+<div id="splash">
+  <h1 class="typewriter">NASA SPACE APPS CHALLENGE</h1>
+  <h2 class="typewriter" style="animation-delay:.5s">BioForms Mars 2025</h2>
+  <h3 class="typewriter" style="animation-delay:1s">Caleta Olivia, Argentina</h3>
+  <p class="typewriter" style="animation-delay:1.5s">E.I.C.O N°1</p>
+  <button class="button" onclick="enterMission()">Enter Mission</button>
+</div>
+
+<!-- Estrellas -->
+<div id="stars"></div>
+
+<!-- Main App -->
+<main id="mainApp">
+  <!-- Main Menu -->
+  <section id="categories" class="section visible">
+    <div class="card" onclick="showSection('organic')">🌱 Organic</div>
+    <div class="card" onclick="showSection('inorganic')">🔩 Inorganic</div>
+    <div class="card" onclick="showSection('textiles')">👕 Textiles</div>
+    <div class="card" onclick="showSection('calculator')">♻️ Impact Calculator</div>
+    <div class="card" onclick="showMachinery()">⚙️ Machinery Simulator</div>
+  </section>
+
+  <!-- Organic -->
+  <section id="organic" class="section">
+    <h2>♻️ Organic Materials</h2>
+    <div class="details">Food scraps, paper, biodegradable packaging, etc.</div>
+    <div class="button" onclick="showMachines('foodWaste')">Food Waste</div>
+    <div class="button" onclick="showMachines('paperCardboard')">Paper & Cardboard</div>
+    <div class="button" onclick="showMachines('organicPackages')">Organic Packages</div>
+    <button class="button" onclick="showSection('categories')">🔙 Back</button>
+  </section>
+
+  <!-- Inorganic -->
+  <section id="inorganic" class="section">
+    <h2>🔩 Inorganic Materials</h2>
+    <div class="details">Plastics, aluminum, technical foams, composites, etc.</div>
+    <div class="button" onclick="showMachines('plastics')">Plastics</div>
+    <div class="button" onclick="showMachines('aluminum')">Aluminum</div>
+    <div class="button" onclick="showMachines('foam')">Technical Foam</div>
+    <button class="button" onclick="showSection('categories')">🔙 Back</button>
+  </section>
+
+  <!-- Textiles -->
+  <section id="textiles" class="section">
+    <h2>👕 Textile Materials</h2>
+    <div class="details">Used clothing, wipes, EVA textiles, bags, etc.</div>
+    <div class="button" onclick="showMachines('usedClothes')">Used Clothes</div>
+    <div class="button" onclick="showMachines('rags')">Rags</div>
+    <div class="button" onclick="showMachines('evaTextiles')">EVA Textiles</div>
+    <button class="button" onclick="showSection('categories')">🔙 Back</button>
+  </section>
+
+  <!-- Calculator -->
+  <section id="calculator" class="section">
+    <h2>♻️ Impact Calculator</h2>
+    <form id="calcForm">
+      <label>Material</label>
+      <select id="materialSel" onchange="updateMinBox()">
+        <option value="plastics">Plastics (Inorg.)</option>
+        <option value="aluminum">Aluminum (Inorg.)</option>
+        <option value="foam">Technical Foam (Inorg.)</option>
+        <option value="foodWaste">Food Waste (Org.)</option>
+        <option value="paperCardboard">Paper & Cardboard (Org.)</option>
+        <option value="organicPackages">Organic Packages (Org.)</option>
+        <option value="usedClothes">Used Clothes (Text.)</option>
+        <option value="rags">Rags (Text.)</option>
+        <option value="evaTextiles">EVA Textiles (Text.)</option>
+      </select>
+      <label>Weight (kg)</label>
+      <input type="number" id="weightIn" min="0.001" step="0.001" placeholder="Min: 0.001 kg">
+      <button type="button" class="button" onclick="runCalc()">Calculate</button>
+    </form>
+    <div id="calcResult"></div>
+    <button id="dlBtn" class="button" onclick="showStarReport()" style="display:none">📊 Download Report</button>
+  </section>
+
+  <!-- Machines List -->
+  <section id="machinery" class="section">
+    <h2>🔧 Processing Units</h2>
+    <div id="machineList"></div>
+    <button class="button" onclick="showSection('categories')">🔙 Back</button>
+  </section>
+
+  <!-- Machine Guide -->
+  <section id="machineGuide" class="section">
+    <h2 id="machineTitle"></h2>
+    <div id="machineSteps"></div>
+    <button class="button" onclick="showSection('categories')">🔙 Back</button>
+  </section>
+
+  <!-- Back -->
+  <section id="backSection" class="section">
+    <button class="button" onclick="goBack()">🔙 Back</button>
+  </section>
+</main>
+
+<script>
+// Crear estrellas
+function createStars() {
+  const stars = document.getElementById('stars');
+  for (let i = 0; i < 150; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.width = star.style.height = Math.random() * 2 + 'px';
+    star.style.animationDelay = Math.random() * 3 + 's';
+    stars.appendChild(star);
+  }
+}
+createStars();
+
+// ---------- NAVEGACIÓN BASE ----------
+function hideAll() {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+}
+function showSection(id) {
+  hideAll();
+  document.getElementById(id).classList.add('visible');
+}
+function enterMission() {
+  document.getElementById('splash').style.display = 'none';
+  document.getElementById('mainApp').style.display = 'block';
+  showSection('categories');
+}
+
+// ---------- MÁQUINAS POR MATERIAL ----------
+const machinesByMaterial = {
+  foodWaste: ['Composter', 'Biodigester'],
+  paperCardboard: ['Pulp Press', 'Shredder'],
+  organicPackages: ['BioPress', 'Composter'],
+  plastics: ['Shredder', 'Extruder', 'Injection Molder'],
+  aluminum: ['Foundry Oven', 'Metal Press', 'Alloy Separator'],
+  foam: ['Technical Cutter', 'Thermal Press'],
+  usedClothes: ['Fabric Shredder', 'Reweaver'],
+  rags: ['Cleaner Extractor', 'Fiber Compactor'],
+  evaTextiles: ['EVA Grinder', 'Thermo-Reformer']
+};
+
+// ---------- MOSTRAR MÁQUINAS POR MATERIAL ----------
+function showMachines(material) {
+  const container = document.getElementById('machineList');
+  container.innerHTML = `<h3>Selecciona una máquina para ${material.replace(/([A-Z])/g, ' $1')}</h3>`;
+  machinesByMaterial[material].forEach(machine => {
+    const btn = document.createElement('div');
+    btn.className = 'button';
+    btn.textContent = machine;
+    btn.onclick = () => showMachineGuide(machine);
+    container.appendChild(btn);
+  });
+  showSection('machinery');
+}
+
+// ---------- MOSTRAR GUÍA DE LA MÁQUINA ----------
+function showMachineGuide(machine) {
+  const steps = machineSteps[machine] || ['⚠️ No hay guía para esta máquina.'];
+  document.getElementById('machineTitle').textContent = `📘 Guía: ${machine}`;
+  const stepsDiv = document.getElementById('machineSteps');
+  stepsDiv.innerHTML = steps.map(s => `<div class="details">${s}</div>`).join('');
+  showSection('machineGuide');
+}
+
+// ---------- SIMULADOR DE MAQUINARIA (VISUAL) ----------
+const allMachines = [
+  'Plastic Shredder','Induction Oven','Textile Press','Organic Compactor',
+  'Composter','Extruder','Foundry Oven','Biodigester','Pulp Press',
+  'Injection Molder','Metal Press','Alloy Separator','Technical Cutter',
+  'Thermal Press','Fabric Shredder','Reweaver','Cleaner Extractor',
+  'Fiber Compactor','EVA Grinder','Thermo-Reformer'
+];
+
+const machineSteps = {
+  'Plastic Shredder': [
+    '1️⃣ Load plastic waste into hopper.',
+    '2️⃣ Set blade speed to 300 rpm.',
+    '3️⃣ Shred into 5 mm flakes.',
+    '✅ Plastic flakes ready for extrusion.'
+  ],
+  'Induction Oven': [
+    '1️⃣ Load plastic flakes into crucible.',
+    '2️⃣ Apply induction field at 250 °C.',
+    '3️⃣ Monitor heat dissipation (≈ 1.2 kW).',
+    '✅ Molten plastic ready for molding.'
+  ],
+  'Textile Press': [
+    '1️⃣ Load textile fibers into mold.',
+    '2️⃣ Pre-heat to 120 °C.',
+    '3️⃣ Press at 0.4 MPa for 3 min.',
+    '✅ Compressed textile block ready.'
+  ],
+  'Organic Compactor': [
+    '1️⃣ Load dry organic waste.',
+    '2️⃣ Compress at 50 bar.',
+    '3️⃣ Eject compacted briquette.',
+    '✅ Organic briquette ready for storage.'
+  ],
+  'Composter': [
+    '1️⃣ Load organic matter into composter drum.',
+    '2️⃣ Add microbial starter and seal unit.',
+    '3️⃣ Wait 72 Martian hours for decomposition.',
+    '✅ Result: nutrient-rich compost for hydroponics.'
+  ],
+  'Extruder': [
+    '1️⃣ Feed shredded plastic flakes into hopper.',
+    '2️⃣ Set temperature to 220 °C.',
+    '3️⃣ Extrude filament for 3D printing.',
+    '✅ Output: reusable polymer filament.'
+  ],
+  'Foundry Oven': [
+    '1️⃣ Load aluminum scrap into crucible.',
+    '2️⃣ Heat to 660 °C under inert atmosphere.',
+    '3️⃣ Cast into ingots or sheets.',
+    '✅ Ready for radiation shielding.'
+  ],
+  'Biodigester': [
+    '1️⃣ Insert organic waste and add water (2:1 ratio).',
+    '2️⃣ Activate methane trap system.',
+    '3️⃣ Collect biogas for energy storage.',
+    '✅ Residue used as liquid fertilizer.'
+  ],
+  'Pulp Press': [
+    '1️⃣ Soak paper in 60°C water for 30 min.',
+    '2️⃣ Press into molds at 5 bar.',
+    '3️⃣ Dry with Martian air (low humidity).',
+    '✅ Output: recycled paper sheets.'
+  ],
+  'Injection Molder': [
+    '1️⃣ Load polymer pellets.',
+    '2️⃣ Heat to 230°C and inject into mold.',
+    '3️⃣ Cool for 60 s and eject part.',
+    '✅ Ready-to-use plastic parts.'
+  ],
+  'Metal Press': [
+    '1️⃣ Place heated aluminum into press.',
+    '2️⃣ Apply 200 kN to form sheets.',
+    '3️⃣ Water-quench to 60°C.',
+    '✅ Sheets ready for machining.'
+  ],
+  'Alloy Separator': [
+    '1️⃣ Shred metals to 1 mm.',
+    '2️⃣ Use magnetic & eddy-current separation.',
+    '3️⃣ Collect pure Al, Mg, Ti streams.',
+    '✅ 98% purity achieved.'
+  ],
+  'Technical Cutter': [
+    '1️⃣ Set blade to foam thickness.',
+    '2️⃣ Cut at 2 m/min.',
+    '3️⃣ Stack for reuse as insulation.',
+    '✅ Thermal conductivity 0.034 W/m·K.'
+  ],
+  'Thermal Press': [
+    '1️⃣ Pre-heat foam to 120°C.',
+    '2️⃣ Press at 0.3 MPa for 5 min.',
+    '3️⃣ Cool under pressure.',
+    '✅ Densified foam blocks.'
+  ],
+  'Fabric Shredder': [
+    '1️⃣ Introduce used clothes.',
+    '2️⃣ Shred into 2 mm fibers.',
+    '3️⃣ Collect fiberfill for insulation.',
+    '✅ Reduces thermal conductivity by 30%.'
+  ],
+  Reweaver: [
+    '1️⃣ Align shredded fibers.',
+    '2️⃣ Spin into new yarn.',
+    '3️⃣ Weave into fabric.',
+    '✅ New textile ready.'
+  ],
+  'Cleaner Extractor': [
+    '1️⃣ Boil rags in 80°C water.',
+    '2️⃣ Centrifuge to remove oil.',
+    '3️⃣ Dry and compact.',
+    '✅ Clean fiber for reuse.'
+  ],
+  'Fiber Compactor': [
+    '1️⃣ Load loose fibers.',
+    '2️⃣ Compress to 200 kg/m³.',
+    '3️⃣ Bind with biodegradable resin.',
+    '✅ Insulation batts formed.'
+  ],
+  'EVA Grinder': [
+    '1️⃣ Grind EVA textiles into powder.',
+    '2️⃣ Mix with regolith binder.',
+    '3️⃣ 3D-print habitat bricks.',
+    '✅ Compressive strength 25 MPa.'
+  ],
+  'Thermo-Reformer': [
+    '1️⃣ Heat EVA to 250°C.',
+    '2️⃣ Extrude through die.',
+    '3️⃣ Cool to shape.',
+    '✅ Rigid panels ready.'
+  ]
+};
+
+function showMachinery() {
+  const container = document.getElementById('machineList');
+  container.innerHTML = '';
+  allMachines.forEach(machine => {
+    const btn = document.createElement('div');
+    btn.className = 'button';
+    btn.textContent = machine;
+    btn.onclick = () => showMachineGuide(machine);
+    container.appendChild(btn);
+  });
+  showSection('machinery');
+}
+
+// ---------- CALCULADORA ----------
+let totalMission = 12600;
+let totalRecycled = 0;
+const minByMaterial = {
+  plastics: 0.01, aluminum: 0.005, foam: 0.02, foodWaste: 0.05,
+  paperCardboard: 0.01, organicPackages: 0.02, usedClothes: 0.005,
+  rags: 0.005, evaTextiles: 0.01
+};
+const blockLimits = {
+  plastics: 3993, aluminum: 3993, foam: 3993, foodWaste: 5179,
+  paperCardboard: 5179, organicPackages: 5179, usedClothes: 3428,
+  rags: 3428, evaTextiles: 3428
+};
+function updateMinBox() {
+  const sel = document.getElementById('materialSel').value;
+  const min = minByMaterial[sel];
+  document.getElementById('weightIn').min = min;
+  document.getElementById('weightIn').placeholder = `Min: ${min} kg`;
+}
+function runCalc() {
+  const sel = document.getElementById('materialSel').value;
+  const kg = parseFloat(document.getElementById('weightIn').value);
+  const min = minByMaterial[sel];
+  if (!kg || kg < min) { alert(`Enter at least ${min} kg`); return; }
+  if (kg > blockLimits[sel]) { alert(`Max for this block: ${blockLimits[sel]} kg`); return; }
+  if (kg > totalMission) { alert('Exceeds remaining mission mass'); return; }
+  totalRecycled += kg;
+  totalMission -= kg;
+  const percentCO2 = (totalRecycled / 12600) * 100;
+  document.getElementById('calcResult').innerHTML = `
+    <div class="metric">Recycled mass<span>${parseFloat(totalRecycled.toFixed(6))} kg</span></div>
+    <div class="metric">Remaining mass<span>${parseFloat(totalMission.toFixed(0))} kg</span></div>
+    <div class="metric">CO₂ reduction %<span>${percentCO2.toFixed(1)} %</span></div>
+  `;
+  document.getElementById('dlBtn').style.display = 'inline-block';
+}
+function showStarReport() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.text('BioForms Mars 2025 – Technical Sheet', 14, 22);
+  doc.save('BioForms_Mars_2025_Technical_Sheet.pdf');
+}
+</script>
+
+</body>
+</html>
